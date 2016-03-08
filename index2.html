@@ -1,0 +1,156 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="jquery.slabtext.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    google.load("feeds", "1");
+
+    function initialize() {
+        var feed = new google.feeds.Feed("https://medium.com/feed/@ade3");
+        feed.setNumEntries(10);
+        feed.load(function(result) {
+            if (!result.error) {
+                var container = document.getElementById("feed");
+                for (var i = 0; i < result.feed.entries.length; i++) {
+                    var entry = result.feed.entries[i];
+
+                    var title = entry.title;
+                    trimmedTitle = title.split('" in '); // this removes Medium's publication name
+                    trimmedTitle = trimmedTitle[0];
+                    if (trimmedTitle.substring(0, 1) == '"') {
+                        trimmedTitle = trimmedTitle.substring(1); // this removes the first character if it is a double quote which happens if the post is in a publication
+                    }
+
+                    var content = entry.content;
+
+                    image = content.split('<img src="');
+                    image = image[1];
+                    if (image) {
+                        image = image.split('" width="');
+                        imagePath = image[0];
+                        var blogPost = "<a href='" + entry.link + "'><div class='post' style='background-image: url(" + imagePath + ");'><div class='post-wrap'><span class='slabtext'>" + trimmedTitle + "</span></div></div></a>";
+                        $('#feed').append(blogPost);
+                    }
+                }
+            }
+            $('.post-wrap').slabText();
+        });
+    }
+    google.setOnLoadCallback(initialize);
+    </script>
+    <style type="text/css">
+    body {
+        margin: 0;
+    }
+    
+    p {
+        font-family: 'Vollkorn', serif;
+        color: #555;
+    }
+    
+    body,
+    h1,
+    h2,
+    h3 {
+        font-family: 'Montserrat', sans-serif;
+        /*text-transform: uppercase;*/
+        color: #000;
+    }
+    
+    .post-wrap:hover {
+        transition: all 0.5s ease;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .post-wrap {
+        transition: all 0.5s ease;
+        background-color: rgba(255, 255, 255, 0);
+    }
+    
+    .slabtext:hover {
+        transition: color 0.5s ease;
+        transition: text-shadow 0.5s ease;
+        color: rgba(10, 10, 10, 1);
+        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0);
+    }
+    
+    .slabtext {
+        transition: color 0.5s ease;
+        transition: text-shadow 0.5s ease;
+        color: rgba(255, 255, 255, 1);
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 1);
+    }
+    
+    .post {
+        width: 100%;
+        height: 150px;
+        width: 100%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        float: left;
+        line-height: 150px;
+        white-space: nowrap;
+    }
+    
+    .post-wrap {
+        padding: 0 20px;
+    }
+    
+    #feed .slabtext {
+        /*mix-blend-mode: exclusion;*/
+    }
+    /* Small devices (tablets, 768px and up) */
+    
+    @media (min-width: 768px) {
+        .post {
+            width: 50%;
+            height: 150px;
+        }
+    }
+    /* Medium devices (desktops, 992px and up) */
+    
+    @media (min-width: 992px) {
+        .post {
+            width: 33.33%;
+            height: 200px;
+            line-height: 200px;
+        }
+    }
+    /* Large devices (large desktops, 1200px and up) */
+    
+    @media (min-width: 1200px) {
+        .post {
+            width: 25%;
+            height: 150px;
+            line-height: 150px;
+        }
+    }
+    
+    .slabtexted .slabtext {
+        display: -moz-inline-box;
+        display: inline-block;
+        white-space: nowrap;
+    }
+    
+    .slabtextinactive .slabtext {
+        display: inline;
+        white-space: normal;
+        font-size: 1em !important;
+        letter-spacing: inherit !important;
+        word-spacing: inherit !important;
+        *letter-spacing: 0 !important;
+        *word-spacing: 0 !important;
+    }
+    
+    .slabtextdone .slabtext {
+        display: block;
+    }
+    </style>
+</head>
+
+<body id="root" class="index">
+    <div id="feed"></div>
+</body>
+
+</html>
